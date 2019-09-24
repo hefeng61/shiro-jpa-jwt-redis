@@ -1,0 +1,7 @@
+# shiro-jpa-jwt-redis
+shiro+jwt+redis整合
+程序整体运行的顺序，项目启动首先加载shiro的配置类shiroConfig，里面配置了jwt过滤器，缓存管理器和注解支持等，
+然后调用login接口，验证账号和密码后生成jwt并设置refreshToken，value值为当前时间戳，过期时间30分钟，其他请求进来时必须携带jwt，
+请求进来时会进入jwtFilter，在excuteLogin处进行账号密码的验证，此时会调用重写的UserRealm中的doGetAuthenticationInfo进行验证，
+如果使用了@RequiresRoles或@RequiresPermissions等注解，则验证通过后会通过重写的customCahce去redis中查询对应的权限角色信息，
+如果没查到，则去调用UserRealm的doGetAuthorizationInfo进行授权，并将对应的权限角色信息放入的对应的redis缓存中。
